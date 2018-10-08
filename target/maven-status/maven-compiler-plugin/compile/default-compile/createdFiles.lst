@@ -1,2 +1,4 @@
 com/rahul/searcher/ServletInitializer.class
+com/rahul/searcher/controller/ServerController.class
 com/rahul/searcher/SearcherApplication.class
+com/rahul/searcher/dto/IndexDTO.class
