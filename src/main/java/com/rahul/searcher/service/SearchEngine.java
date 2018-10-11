@@ -40,6 +40,9 @@ public class SearchEngine {
 	
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private SeachIndexer seachIndexer;
 
 	private String[] fields;
 
@@ -79,6 +82,7 @@ public class SearchEngine {
 			indexFile.mkdirs();
 			log.info("The index location is {}", indexFile.getAbsolutePath());
 		}
+		seachIndexer.index(indexFile);
 		
 	}
 
