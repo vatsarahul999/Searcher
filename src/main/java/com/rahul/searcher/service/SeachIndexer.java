@@ -63,11 +63,16 @@ public class SeachIndexer {
 				final CellProcessor[] processors = getProcessors();
 				w = new IndexWriter(index, config);
 				Map<String, Object> fieldsInCurrentRow;
+				log.info("Indexing stage 2 {}", indexFile);
 				int count = 0;
 				while ((fieldsInCurrentRow = listReader.read(headers, processors)) != null) {
 					w.addDocument(convertToDocument(fieldsInCurrentRow));
-					w.commit();
+					
 					count++;
+					if(count%500==0) {
+						log.info("Indexed {} documents",count );
+						w.commit();
+					}
 					
 				}
 				w.flush();
@@ -95,13 +100,13 @@ public class SeachIndexer {
 		index(indexFile);
 		
 	}
-	public File createIfNotExists(String srcFilePath2) {
-		File indexFile = new File(srcFilePath2);
-		if (!indexFile.exists()) {
-			indexFile.mkdirs();
-			log.info("The index location is {}", indexFile.getAbsolutePath());
+	public File createIfNotExists(String pathToFile) {
+		File iFile = new File(pathToFile);
+		if (!iFile.exists()) {
+			iFile.mkdirs();
+			log.info("The file created is  {}", iFile.getAbsolutePath());
 		}
-		return indexFile;
+		return iFile;
 	}
 
 	private CellProcessor[] getProcessors() {
@@ -115,10 +120,10 @@ public class SeachIndexer {
 	private Iterable<? extends IndexableField> convertToDocument(Map<String, Object> fieldsInCurrentRow) {
 		Document document =  new Document();
 		for(String key: SConstants.feilds){
-		//	log.info("Added data to doc {} : {}",key,fieldsInCurrentRow.get(key).toString());
+			log.info("Added data to doc {} : {}",key,fieldsInCurrentRow.get(key).toString());
 		document.add(new StringField(key, fieldsInCurrentRow.get(key).toString().toLowerCase(), Field.Store.YES));
 		}
-		//log.info("Indexed a doc");
+		log.info("Indexed a doc");
 		return document;
 	}
 }

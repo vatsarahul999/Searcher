@@ -11,8 +11,10 @@ import javax.annotation.PostConstruct;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -57,9 +59,9 @@ public class SearchEngine {
 			log.info("The query created is {}", query2);
 			totalResults = totalResults > 0 ? totalResults : 10;
 			TopDocs topDocs = searcher.search(query2, totalResults);
-			for (ScoreDoc doc : topDocs.scoreDocs) {
-				log.info("The doc matched is {}", doc.toString());
-				result.add(convertDocTDocumentDTO(doc));
+			for (ScoreDoc scDoc : topDocs.scoreDocs) {
+				log.info("The doc matched is {}", scDoc.toString());
+				result.add(convertDocTDocumentDTO(searcher.doc(scDoc.doc),scDoc.score));
 			}
 
 		} catch (Exception e) {
@@ -74,9 +76,15 @@ public class SearchEngine {
 		indexDirectoryPath = env.getProperty("search.index.path");
 	}
 
-	private DocumentDTO convertDocTDocumentDTO(ScoreDoc doc) {
+	private DocumentDTO convertDocTDocumentDTO(Document document, float score) {
 		Map<String, String> data = new HashMap<>();
-		return new DocumentDTO(doc.score, data, doc.toString());
+		StringBuffer fieldResult = new StringBuffer();
+		for (IndexableField field : document.getFields()) {
+			fieldResult.append(field.name()).append(field.stringValue());
+			data.put(field.name(), field.stringValue());
+			log.info("The value is {} : {}",field.name(),field.stringValue());
+		}
+		return new DocumentDTO(score, data, fieldResult.toString());
 	}
 
 }
