@@ -3,8 +3,6 @@ package com.rahul.searcher.service;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -65,12 +63,15 @@ public class SeachIndexer {
 				final CellProcessor[] processors = getProcessors();
 				w = new IndexWriter(index, config);
 				Map<String, Object> fieldsInCurrentRow;
+				int count = 0;
 				while ((fieldsInCurrentRow = listReader.read(headers, processors)) != null) {
 					w.addDocument(convertToDocument(fieldsInCurrentRow));
 					w.commit();
+					count++;
 					
 				}
 				w.flush();
+				log.info("The number of documents indexed is {}",count);
 			}
 
 		} catch (Exception e) {
@@ -82,6 +83,7 @@ public class SeachIndexer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		log.info("Compled indexing");
 	}
 	@PostConstruct
 	public void init(){
@@ -116,7 +118,7 @@ public class SeachIndexer {
 		//	log.info("Added data to doc {} : {}",key,fieldsInCurrentRow.get(key).toString());
 		document.add(new StringField(key, fieldsInCurrentRow.get(key).toString().toLowerCase(), Field.Store.YES));
 		}
-		log.info("Indexed a doc");
+		//log.info("Indexed a doc");
 		return document;
 	}
 }
