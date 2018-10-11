@@ -1,6 +1,6 @@
 package com.rahul.searcher.controller;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rahul.searcher.dto.DocumenDTO;
+import com.rahul.searcher.dto.DocumentDTO;
 import com.rahul.searcher.dto.IndexDTO;
 import com.rahul.searcher.service.SearchEngine;
 
@@ -30,7 +30,7 @@ public class ServerController {
 	}
 	
 	@RequestMapping(value = "/search/{query}",method = RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
-	public List<DocumenDTO> getSearchResult(@PathVariable String query){
+	public Collection<DocumentDTO> getSearchResult(@PathVariable String query){
 		return sEngine.search(query);
 	}
 	
