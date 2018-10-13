@@ -57,7 +57,7 @@ public class SearchEngine {
 			MultiFieldQueryParser qp = new MultiFieldQueryParser(SConstants.feilds, analyzer);
 			Query query2 = qp.parse(query.toLowerCase());
 			log.info("The query created is {}", query2);
-			totalResults = totalResults > 0 ? totalResults : 10;
+			totalResults = totalResults > 0 ? totalResults : 1000;
 			TopDocs topDocs = searcher.search(query2, totalResults);
 			for (ScoreDoc scDoc : topDocs.scoreDocs) {
 				log.info("The doc matched is {}", scDoc.toString());

@@ -2,7 +2,7 @@ package com.rahul.searcher.dto;
 
 import java.util.Map;
 
-public class DocumentDTO {
+public class DocumentDTO implements Comparable<DocumentDTO>{
 	
 	private double score;
 	
@@ -38,6 +38,15 @@ public class DocumentDTO {
 
 	public void setSource(String source) {
 		this.source = source;
+	}
+
+	@Override
+	public int compareTo(DocumentDTO o) {
+		if(o==null|| this.score>o.score)
+			return -1;
+		else if(this.score<o.score)
+			return 1;
+		return 0;
 	}
 	
 }
